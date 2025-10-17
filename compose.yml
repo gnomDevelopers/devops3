@@ -1,0 +1,21 @@
+services:
+  gateway:
+    build: ./gateway
+    container_name: gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - health-service
+      - user-service
+
+  health-service:
+    build: ./health_service
+    container_name: health_service
+    expose:
+      - "8080"
+
+  user-service:
+    build: ./user_service
+    container_name: user_service
+    expose:
+      - "8080"
