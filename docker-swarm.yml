@@ -1,0 +1,47 @@
+version: "3.9"
+
+services:
+  gateway:
+    image: gateway:latest
+    build: ./gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - health-service
+      - user-service
+    networks:
+      - app_net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == manager]
+
+  health-service:
+    image: health-service:latest
+    build: ./health_service
+    expose:
+      - "8080"
+    networks:
+      - app_net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  user-service:
+    image: user-service:latest
+    build: ./user_service
+    expose:
+      - "8080"
+    networks:
+      - app_net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+networks:
+  app_net:
+    external: true
